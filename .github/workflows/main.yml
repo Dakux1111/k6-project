@@ -1,0 +1,55 @@
+name: k6 Performance tests
+
+on:
+  push: 
+    branches: [feature/first_class]
+  pull_request:
+    branches: [feature/first_class]
+
+jobs:
+  smoke:
+    name: "k6 Smoke Test"
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    env:
+      BASE_URL: ${{ secrets.BASE_URL }}
+      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+
+    steps:
+      - name: Checkout Código
+        uses: actions/checkout@v4
+
+      - name: Instalar K6
+        run: |
+          curl -L https://github.com/grafana/k6/releases/latest/download/k6-v2.0.0-linux-amd64.tar.gz \
+            | tar -xz
+          sudo mv k6-v2.0.0-linux-amd64/k6 /usr/local/bin/k6
+          k6 version
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: "npm"
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar Typescript con esbuild
+        run: node scripts/build-k6.mjs
+          
+      - name: Ejecutar Smoke tests
+        run: |
+          k6 run dist/smoke-test.js -e BASE_URL=$BASE_URL -e TEST_USER_EMAIL=$TEST_USER_EMAIL -e TEST_USER_PASSWORD=$TEST_USER_PASSWORD --summary-export=reports/smoke-test.json
+        continue-on-error: true
+        id: k6_run
+
+      - name: Subir Resultados
+        uses: actions/upload-artifact@v4
+        if: ${{!cancelled()}}
+        with:
+          name: k6-smoke-report-${{ github.run_id }}
+          path: reports/
+          retention-days: 30

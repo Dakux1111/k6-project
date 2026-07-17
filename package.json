@@ -1,0 +1,24 @@
+{
+  "name": "project-k6",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "esbuild": "^0.28.0",
+    "k6": "^0.0.0"
+  },
+  "devDependencies": {
+    "@types/k6": "^1.7.0",
+    "k6-html-reporter": "^1.0.5"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

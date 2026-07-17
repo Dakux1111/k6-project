@@ -1,0 +1,5 @@
+reports/*.html
+reports/*.json
+node_modules/
+.env
+*.log

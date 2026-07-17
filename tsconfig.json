@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "allowImportingTsExtensions": true,
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "types": ["k6"]
+  },
+  "include": ["tests/**/*.ts", "config/**/*.ts", "helpers/**/*.ts", "types/**/*.ts"]
+}
