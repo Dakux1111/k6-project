@@ -1,10 +1,5 @@
-import http from 'k6/http';
-import { check, sleep } from 'k6';
 import type { Options } from 'k6/options';
-import { ENV } from '../../config/environments.ts';
-import { ENDPOINTS } from '../../config/endpoints.ts';
-import { login } from '../../helpers/auth.ts';
-import { jsonHeaders } from '../../helpers/utils.ts';
+import { runPublicPostsFlow } from '../../helpers/utils.ts';
 
 export const options: Options = {
     stages: [
@@ -23,25 +18,11 @@ export const options: Options = {
 };
 
 export default function (): void {
+    runPublicPostsFlow();
+}
 
-    const token = login();
-    check(token, {
-        'login return token': (t) => t !== null && t.length > 0, 
-    });
-
-    if (!token) {
-        sleep(1);
-        return
-    }
-
-    sleep(1);
-
-    // 2 blog publico
-    const postsRes = http.get(`${ENV.BASE_URL}${ENDPOINTS.BLOG.PUBLIC_POSTS}?per_page=50`, { headers : jsonHeaders});
-    check(postsRes, {
-        'post status 200': (r) => r.status === 200,
-        'posts response time < 800 ms': (r) => r.timings.duration < 800,
-    })
-    sleep(1);
-
+export function handleSummary(data) {
+  return {
+    "reports/stress-summary.json": JSON.stringify(data),
+  };
 }

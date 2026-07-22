@@ -1,8 +1,8 @@
 
-const reporter = require('k6-html-reporter');
+  const reporter = require('k6-html-reporter');
 
-reporter.generateSummaryReport({
-  input: 'reports/smoke-test.json',
-  output: 'reports',});
+  reporter.generateSummaryReport({
+    jsonFile: 'reports/soak-summary.json',
+    output: 'reports',});
 
-console.log('Report generated successfully!');
+  console.log('Report generated successfully!');
